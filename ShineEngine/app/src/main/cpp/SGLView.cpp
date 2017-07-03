@@ -4,6 +4,8 @@
 
 #include "SGLView.h"
 
+//default context attributions are set as follows
+GLContextAttrs SGLView::_glContextAttrs = {5, 6, 5, 0, 16, 0};
 
 SGLView::SGLView()
 {
@@ -14,8 +16,12 @@ SGLView::~SGLView()
 
 }
 
-std::string SGLView::setGLContextAttrs()
+void SGLView::setGLContextAttrs(GLContextAttrs& glContextAttrs)
 {
-    std::string hello = "SGLView : Hello from C++";
-    return hello;
+    _glContextAttrs = glContextAttrs;
+}
+
+GLContextAttrs SGLView::getGLContextAttrs()
+{
+    return _glContextAttrs;
 }

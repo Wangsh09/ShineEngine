@@ -5,7 +5,19 @@
 #ifndef SHINEENGINE_SGLVIEW_H
 #define SHINEENGINE_SGLVIEW_H
 
-#include <string>
+/** @struct GLContextAttrs
+ *
+ * There are six opengl Context Attrs.
+ */
+struct GLContextAttrs
+{
+    int redBits;
+    int greenBits;
+    int blueBits;
+    int alphaBits;
+    int depthBits;
+    int stencilBits;
+};
 
 class SGLView {
 
@@ -24,7 +36,16 @@ public:
      *
      * @param glContextAttrs The OpenGL context attrs.
      */
-    static std::string setGLContextAttrs();
+    static void setGLContextAttrs(GLContextAttrs& glContextAttrs);
+
+    /** Return the OpenGL context attrs.
+     *
+     * @return Return the OpenGL context attrs.
+     */
+    static GLContextAttrs getGLContextAttrs();
+
+    /** The OpenGL context attrs. */
+    static GLContextAttrs _glContextAttrs;
 
 };
 
