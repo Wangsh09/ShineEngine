@@ -17,8 +17,17 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/SGLView.cpp
-			 src/main/cpp/javaactivity-android.cpp )
+             src/main/cpp/GLView.cpp
+			 src/main/cpp/javaactivity-android.cpp
+			 src/main/cpp/Director.cpp
+			 src/main/cpp/Configuration.cpp
+			 src/main/cpp/GLViewImpl.cpp
+			 src/main/cpp/Image.cpp
+			 src/main/cpp/Texture2D.cpp
+			 src/main/cpp/Renderer.cpp
+			 src/main/cpp/RenderState.cpp
+			 src/main/cpp/Geometry.cpp
+			 src/main/cpp/Application.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
