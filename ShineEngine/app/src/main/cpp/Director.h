@@ -14,6 +14,7 @@
 #include "GLView.h"
 #include "utility.h"
 #include "Geometry.h"
+#include "OGLES2Draw.h"
 
 class Director {
 

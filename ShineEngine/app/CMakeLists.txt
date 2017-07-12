@@ -27,7 +27,8 @@ add_library( # Sets the name of the library.
 			 src/main/cpp/Renderer.cpp
 			 src/main/cpp/RenderState.cpp
 			 src/main/cpp/Geometry.cpp
-			 src/main/cpp/Application.cpp)
+			 src/main/cpp/Application.cpp
+			 src/main/cpp/OGLES2Draw.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

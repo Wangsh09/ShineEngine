@@ -3,7 +3,6 @@
 //
 
 #include "Director.h"
-#include <GLES2/gl2.h>
 
 #define kDefaultFPS        60  // 60 frames per second
 
@@ -293,10 +292,7 @@ void Director::mainLoop()
 // Draw the Scene
 void Director::drawScene()
 {
-    glViewport(0, 0, 800, 600);
-    glClearColor(1.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    GLenum error = glGetError();
+    OGLES2Draw::getInstance()->run();
     /*
     // calculate "global" dt
     calculateDeltaTime();
