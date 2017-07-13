@@ -45,23 +45,34 @@ int OGLES2Draw::run()
 void OGLES2Draw::draw()
 {
     const GLchar* vertexShaderSource = "attribute vec3 position;\n"
+            "uniform mediump float x;\n"
+            "varying mediump float vx;\n"
             "void main()\n"
             "{"
             "gl_Position = vec4(position, 1.0);\n"
+            "vx = x;\n"
             "}";
 
-    const GLchar* fragmentShaderSource = "void main()\n"
+    const GLchar* fragmentShaderSource = "precision mediump float;\n"
+            "uniform float x;\n"
+            "varying float vx;\n"
+            "void main()\n"
             "{"
-            "gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+            "gl_FragColor = vec4(vx, x, 0.0, 1.0);\n"
             "}";
 
     GLfloat vertices[] = {
             -1.0f, -1.0f, 0.0f, // BottomLeft
             1.0f, -1.0f, 0.0f, // BottomRight
             0.0f,  1.0f, 0.0f,  // TopLeft
+            1.0f,  1.0f, 0.0f,  // TopRight
     };
 
-    glClearColor(0.0, 1.0, 0.0, 1.0);
+    GLubyte index[] = {
+            0, 1, 2, 1, 2, 3,
+    };
+
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glViewport(0, 0, 400, 600);
@@ -79,15 +90,53 @@ void OGLES2Draw::draw()
     glLinkProgram(program);
     glUseProgram(program);
 
+    GLuint vbo, ibo;
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, 3 * 4 * sizeof(GL_FLOAT), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLubyte), index, GL_STATIC_DRAW);
     GLint position = glGetAttribLocation(program,  "position");
     if(-1 != position)
     {
         glEnableVertexAttribArray(position);
-        glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+        glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    GLint x = glGetUniformLocation(program, "x");
+    glUniform1f(x, 1.0f);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
     glDisableVertexAttribArray(position);
+    glUseProgram(0);
+    glDeleteProgram(program);
+    glDeleteShader(vs);
+    glDeleteShader(ps);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ibo);
+
+    GLenum error = glGetError();
+    switch (error)
+    {
+        case 0x0500:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_INVALID_ENUM");
+            break;
+        case 0x0501:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_INVALID_VALUE");
+            break;
+        case 0x0502:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_INVALID_OPERATION");
+            break;
+        case 0x0505:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_OUT_OF_MEMORY");
+            break;
+        case 0:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_NO_ERROR");
+            break;
+        default:
+            __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","GL_ERROR");
+    }
 
 
 
