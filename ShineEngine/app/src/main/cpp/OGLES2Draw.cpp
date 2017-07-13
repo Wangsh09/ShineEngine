@@ -45,11 +45,12 @@ int OGLES2Draw::run()
 void OGLES2Draw::draw()
 {
     const GLchar* vertexShaderSource = "attribute vec3 position;\n"
+            "attribute float alpha;\n"
             "uniform mediump float x;\n"
             "varying mediump float vx;\n"
             "void main()\n"
             "{"
-            "gl_Position = vec4(position, 1.0);\n"
+            "gl_Position = vec4(position, alpha);\n"
             "vx = x;\n"
             "}";
 
@@ -68,6 +69,10 @@ void OGLES2Draw::draw()
             1.0f,  1.0f, 0.0f,  // TopRight
     };
 
+    GLfloat color[] = {
+            1.0f, 1.0f, 1.0f, 1.0f,
+    };
+
     GLubyte index[] = {
             0, 1, 2, 1, 2, 3,
     };
@@ -79,12 +84,16 @@ void OGLES2Draw::draw()
 
     GLint vs = glCreateShader(GL_VERTEX_SHADER);
     GLint ps = glCreateShader(GL_FRAGMENT_SHADER);
+    GLint program = glCreateProgram();
+
+    glBindAttribLocation(program, 0, "position");
+    glBindAttribLocation(program, 1, "position");
+    glBindAttribLocation(program, 2, "alpha");
     glShaderSource(vs, 1, &vertexShaderSource, nullptr);
     glShaderSource(ps, 1, &fragmentShaderSource, nullptr);
     glCompileShader(vs);
     glCompileShader(ps);
 
-    GLint program = glCreateProgram();
     glAttachShader(program, vs);
     glAttachShader(program, ps);
     glLinkProgram(program);
@@ -103,6 +112,16 @@ void OGLES2Draw::draw()
         glEnableVertexAttribArray(position);
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
+
+    if(1 == position)
+    {
+        __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","1 == position");
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, color);
 
     GLint x = glGetUniformLocation(program, "x");
     glUniform1f(x, 1.0f);
