@@ -60,7 +60,7 @@ void OGLES2Draw::draw()
             "varying vec2 uv;\n"
             "void main()\n"
             "{"
-            "gl_FragColor = texture2D(tex, uv, -1.0);\n"
+            "gl_FragColor = texture2D(tex, uv, 0.0);\n"
             "}";
 
     GLfloat vertices[] = {
@@ -104,6 +104,8 @@ void OGLES2Draw::draw()
     glShaderSource(ps, 1, &fragmentShaderSource, nullptr);
     glCompileShader(vs);
     glCompileShader(ps);
+
+    Check_CompileShader(ps);
 
     glAttachShader(program, vs);
     glAttachShader(program, ps);
@@ -202,8 +204,6 @@ void OGLES2Draw::draw()
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ibo);
 
-    Check_Error();
-
     /*
     glViewport(0, 0, 300, 300);
     glClearColor(0.0, 0.0, 1.0, 1.0);
@@ -239,6 +239,15 @@ void OGLES2Draw::Check_Error()
     }
 }
 
+void OGLES2Draw::Check_CompileShader(GLint shader)
+{
+    GLint nGetLogLength = 0;
+    GLchar *sGetLog = NULL;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &nGetLogLength);
+    sGetLog = (GLchar *)malloc(sizeof(GLchar) * nGetLogLength);
+    glGetShaderInfoLog(shader, nGetLogLength, NULL, sGetLog);
+    __android_log_print(ANDROID_LOG_ERROR,"OGLES2Draw::draw()","%s", sGetLog);
+}
 //  Generate an RGB8 checkerboard image
 GLubyte* OGLES2Draw::GenCheckImage(int width, int height, int colorOffset)
 {
