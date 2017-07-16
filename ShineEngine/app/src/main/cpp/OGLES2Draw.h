@@ -9,6 +9,7 @@
 #include <GLES2/gl2.h>
 #include <string>
 #include "utility.h"
+#include <stdlib.h>
 
 class OGLES2Draw {
 
@@ -32,6 +33,10 @@ public:
 
 private:
     void draw();
+
+    GLubyte* GenCheckImage(int width, int height, int checkSize);
+
+    void Check_Error();
 };
 
 
